@@ -10,33 +10,33 @@ variable "public_key_file" {
   default     = "~/.ssh/id_rsa.pub"
 }
 
-variable "region" {
+variable "aws_region" {
   type        = string
   description = "AWS region."
 }
 
-variable "availability_zone" {
+variable "aws_availability_zone" {
   type        = string
   description = "AWS availability zone."
 }
 
-variable "vpc_cidr" {
+variable "aws_vpc_cidr" {
   type        = string
   description = "CIDR block for the VPC and subnet."
 }
 
-variable "subnet_cidr_public" {
+variable "aws_subnet_cidr_public" {
   type        = string
   description = "CIDR block for the public subnet."
 }
 
-variable "subnet_cidr_private" {
+variable "aws_subnet_cidr_private" {
   type        = string
   description = "CIDR block for the private subnet."
 }
 
-variable "subnets_extra" {
-  type        = map(object(
+variable "aws_subnets_extra" {
+  type = map(object(
     {
       description     = string
       interface_index = number
@@ -46,49 +46,49 @@ variable "subnets_extra" {
   description = "Extra subnets."
 }
 
-variable "subnet_cidr_pod_network" {
+variable "k8s_subnet_cidr_pod_network" {
   type        = string
   description = "CIDR block for kubernetes pod network."
 }
 
-variable "cluster_name" {
+variable "k8s_cluster_name" {
   type        = string
   description = "Name for the Kubernetes cluster. If null, a random name is automatically chosen."
   default     = null
 }
 
-variable "allowed_bastion_ssh_cidr_blocks" {
+variable "aws_allowed_bastion_ssh_cidr_blocks" {
   type        = list(string)
   description = "List of CIDR blocks from which it is allowed to make SSH connections to the bastion host."
 }
 
-variable "bastion_instance_type" {
+variable "aws_bastion_instance_type" {
   type        = string
   description = "EC2 instance type for the bastion host."
 }
 
-variable "master_instance_type" {
+variable "aws_master_instance_type" {
   type        = string
   description = "EC2 instance type for the master node (must have at least 2 CPUs)."
 }
 
-variable "worker_instance_type" {
+variable "aws_worker_instance_type" {
   type        = string
   description = "EC2 instance type for the worker nodes."
 }
 
-variable "num_workers" {
+variable "k8s_num_workers" {
   type        = number
   description = "Number of worker nodes."
 }
 
-variable "extra_tags" {
+variable "aws_extra_tags" {
   type        = map(string)
   description = "A set of tags to assign to the created resources."
   default     = {}
 }
 
-variable "private_zone" {
+variable "aws_private_zone" {
   type        = bool
   description = "Create a private Route53 host zone."
   default     = false
@@ -99,12 +99,12 @@ variable "k8s_version" {
   description = "Kubernetes version."
 }
 
-variable "k9s_version" {
+variable "k8s_k9s_version" {
   type        = string
   description = "K9s version."
 }
 
-variable "istio_version" {
+variable "k8s_istio_version" {
   type        = string
   description = "Istio version."
 }

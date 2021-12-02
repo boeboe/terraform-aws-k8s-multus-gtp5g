@@ -3,15 +3,15 @@ data "template_file" "user_data_bastion" {
 
   vars = {
     K8S_VERSION   = "${var.k8s_version}-00"
-    K9S_VERSION   = var.k9s_version
-    ISTIO_VERSION = var.istio_version
+    K9S_VERSION   = "v${var.k8s_k9s_version}"
+    ISTIO_VERSION = var.k8s_istio_version
   }
 }
 
 resource "aws_instance" "bastion" {
   ami                         = data.aws_ami.ubuntu.image_id
   associate_public_ip_address = true
-  instance_type               = var.bastion_instance_type
+  instance_type               = var.aws_bastion_instance_type
   iam_instance_profile        = aws_iam_instance_profile.bastion_instance_profile.name
   key_name                    = aws_key_pair.ssh_key_pair.key_name
   source_dest_check           = true
@@ -23,7 +23,7 @@ resource "aws_instance" "bastion" {
     volume_size           = "20"
     delete_on_termination = true
 
-    tags = merge(var.extra_tags, {
+    tags = merge(var.aws_extra_tags, {
       "Name" = "${local.name_prefix}-bastion-disk"
       }
     )
@@ -33,7 +33,7 @@ resource "aws_instance" "bastion" {
     aws_security_group.bastion.id,
   ]
 
-  tags = merge(var.extra_tags, {
+  tags = merge(var.aws_extra_tags, {
     "Name" = "${local.name_prefix}-bastion"
     }
   )

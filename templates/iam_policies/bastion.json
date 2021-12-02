@@ -1,0 +1,35 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "IAM",
+      "Effect": "Allow",
+      "Action": [
+        "organizations:ListTargetsForPolicy",
+        "organizations:ListRoots",
+        "organizations:ListPoliciesForTarget",
+        "organizations:ListPolicies",
+        "organizations:ListParents",
+        "organizations:ListChildren",
+        "organizations:DescribePolicy",
+        "organizations:DescribeOrganizationalUnit",
+        "organizations:DescribeOrganization",
+        "organizations:DescribeAccount",
+        "iam:*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "S3",
+      "Effect": "Allow",
+      "Action": "s3:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "STS",
+      "Effect": "Allow",
+      "Action": "sts:AssumeRole",
+      "Resource": "*"
+    }
+  ]
+}

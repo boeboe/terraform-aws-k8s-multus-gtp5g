@@ -1,5 +1,5 @@
 provider "aws" {
-  region = var.region
+  region = var.aws_region
 }
 
 resource "random_pet" "cluster_name" {}
@@ -17,7 +17,7 @@ resource "random_string" "token_secret" {
 }
 
 locals {
-  name_prefix = var.cluster_name != null ? var.cluster_name : random_pet.cluster_name.id
+  name_prefix = var.k8s_cluster_name != null ? var.k8s_cluster_name : random_pet.cluster_name.id
   token       = "${random_string.token_id.result}.${random_string.token_secret.result}"
 }
 

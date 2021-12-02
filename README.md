@@ -9,6 +9,11 @@
 Terraform module which creates a [k3s](https://k3s.io/) cluster, with multi-server 
 and labels/taints management features, on azure cloud. 
 
+
+# Make sure to check the number of supported interfaces!
+# https://aws.amazon.com/ec2/instance-types/
+# https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-eni.html
+
 ## Usage
 
 ``` hcl

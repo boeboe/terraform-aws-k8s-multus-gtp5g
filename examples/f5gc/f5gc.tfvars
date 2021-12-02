@@ -1,23 +1,26 @@
-region            = "eu-west-1"
-availability_zone = "eu-west-1a"
+aws_region            = "eu-west-1"
+aws_availability_zone = "eu-west-1a"
 
-cluster_name  = "k8s-f5gc"
-k8s_version   = "1.21.7"
-k9s_version   = "v0.25.7"
-istio_version = "1.11.3"
-
-extra_tags = {
+aws_extra_tags = {
   "Email" : "b.vanbos@gmail.com",
   "Environment" : "k8s-f5gc",
   "Owner" : "Bart Van Bos",
   "Managed" : "Terraform",
 }
 
-vpc_cidr            = "10.0.0.0/16"
-subnet_cidr_public  = "10.0.0.0/24"
-subnet_cidr_private = "10.0.1.0/24"
+aws_allowed_bastion_ssh_cidr_blocks = ["0.0.0.0/0"]
 
-subnets_extra = {
+aws_bastion_instance_type = "t2.medium"
+aws_master_instance_type  = "m5.4xlarge"
+aws_worker_instance_type  = "m5.4xlarge"
+
+aws_private_zone = true
+
+aws_vpc_cidr            = "10.0.0.0/16"
+aws_subnet_cidr_public  = "10.0.0.0/24"
+aws_subnet_cidr_private = "10.0.1.0/24"
+
+aws_subnets_extra = {
   "n2" = {
     description     = "N2 interface between RAN and AMF"
     interface_index = 1
@@ -45,18 +48,12 @@ subnets_extra = {
   }
 }
 
+k8s_cluster_name  = "k8s-f5gc"
+k8s_version       = "1.21.7"
+k8s_k9s_version   = "0.25.7"
+k8s_istio_version = "1.11.3"
 
-allowed_bastion_ssh_cidr_blocks = ["0.0.0.0/0"]
-num_workers                     = 3
+k8s_subnet_cidr_pod_network = "192.168.0.0/16"
+k8s_num_workers             = 3
 
-subnet_cidr_pod_network = "192.168.0.0/16"
 
-# Make sure to check the number of supported interfaces!
-# https://aws.amazon.com/ec2/instance-types/
-# https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-eni.html
-
-bastion_instance_type = "t2.medium"
-master_instance_type  = "m5.4xlarge"
-worker_instance_type  = "m5.4xlarge"
-
-private_zone = true

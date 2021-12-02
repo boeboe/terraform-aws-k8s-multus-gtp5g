@@ -10,8 +10,8 @@ help: ## This help
 .DEFAULT_GOAL := help
 
 
-EXAMPLE					:= example1
-# EXAMPLE					:= example2
+EXAMPLE					:= sample
+# EXAMPLE					:= f5gc
 
 TEST_FOLDER			:= ${CURDIR}/examples/${EXAMPLE}
 TERRAFORM_VARS	:= ${TEST_FOLDER}/${EXAMPLE}.tfvars

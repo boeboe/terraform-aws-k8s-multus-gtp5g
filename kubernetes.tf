@@ -47,7 +47,7 @@ data "template_file" "install_aws_lb_controller" {
     CLUSTER_NAME        = local.name_prefix
     MASTER_INSTANCE_ID  = aws_instance.master.id
     WORKER_INSTANCE_IDS = join(" ", aws_instance.workers[*].id)
-    WORKERS_AZ          = var.availability_zone
+    WORKERS_AZ          = var.aws_availability_zone
   }
 }
 
@@ -66,8 +66,8 @@ data "template_file" "install_istio" {
   template = file("${path.module}/templates/kubernetes/install_istio.sh")
 
   vars = {
-    PRIVATE_KEY_FILE    = var.private_key_file
-    BASTION_PUBLIC_IP   = aws_instance.bastion.public_ip
+    PRIVATE_KEY_FILE  = var.private_key_file
+    BASTION_PUBLIC_IP = aws_instance.bastion.public_ip
   }
 }
 

@@ -10,7 +10,7 @@ output "bastion_ssh_command" {
 
 output "zone_id" {
   description = "private zone id for Kubernetes"
-  value       = var.private_zone ? join("", aws_route53_zone.zone.*.zone_id) : ""
+  value       = var.aws_private_zone ? join("", aws_route53_zone.zone.*.zone_id) : ""
 }
 
 output "master_private_ip" {
