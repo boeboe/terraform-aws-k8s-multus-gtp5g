@@ -1,9 +1,9 @@
 # terraform-azure-k3s
 
 ![Terraform Version](https://img.shields.io/badge/terraform-≥_1.0.0-blueviolet)
-[![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/boeboe/terraform-azure-k3s?label=registry)](https://registry.terraform.io/modules/boeboe/k3s/azure)
-[![GitHub issues](https://img.shields.io/github/issues/boeboe/terraform-azure-k3s)](https://github.com/boeboe/terraform-azure-k3s/issues)
-[![Open Source Helpers](https://www.codetriage.com/boeboe/terraform-azure-k3s/badges/users.svg)](https://www.codetriage.com/boeboe/terraform-azure-k3s)
+[![GitHub tag (latest SemVer)](https://img.shields.io/github/v/tag/boeboe/terraform-aws-k8s-multus-gtp5g?label=registry)](https://registry.terraform.io/modules/boeboe/k8s-multus-gtp5g/aws)
+[![GitHub issues](https://img.shields.io/github/issues/boeboe/terraform-aws-k8s-multus-gtp5g)](https://github.com/boeboe/terraform-aws-k8s-multus-gtp5g/issues)
+[![Open Source Helpers](https://www.codetriage.com/boeboe/terraform-aws-k8s-multus-gtp5g/badges/users.svg)](https://www.codetriage.com/boeboe/terraform-aws-k8s-multus-gtp5g)
 [![MIT Licensed](https://img.shields.io/badge/license-MIT-green.svg)](https://tldrlegal.com/license/mit-license)
 
 Terraform module which creates a [k3s](https://k3s.io/) cluster, with multi-server 
@@ -12,64 +12,69 @@ and labels/taints management features, on azure cloud.
 ## Usage
 
 ``` hcl
-module "k3s" {
-  source  = "boeboe/k3s/azure"
+module "k8s-multus-gtp5g" {
+  source  = "boeboe/k8s-multus-gtp5g/aws"
   version = "0.0.1"
 
-  az_resource_group = "TestK3sRG-ServerAgentGroups"
-  az_location       = "westeurope"
+  region            = "eu-west-1"
+  availability_zone = "eu-west-1a"
 
-  az_tags = {
-    Terraform   = "true"
-    Environment = "MyTerraformTest"
-    Owner       = "Bart Van Bos"
+  cluster_name  = "k8s-f5gc"
+  k8s_version   = "1.21.7"
+  k9s_version   = "v0.25.7"
+  istio_version = "1.11.3"
+
+  extra_tags = {
+    "Email" : "b.vanbos@gmail.com",
+    "Environment" : "k8s-f5gc",
+    "Owner" : "Bart Van Bos",
+    "Managed" : "Terraform",
   }
 
-  az_k3s_mysql_server_name    = "test-k3s-mysql-sag"
-  az_k3s_mysql_admin_username = "myadmin"
-  az_k3s_mysql_admin_password = "Password123!"
+  vpc_cidr            = "10.0.0.0/16"
+  subnet_cidr_public  = "10.0.0.0/24"
+  subnet_cidr_private = "10.0.1.0/24"
 
-  az_allow_public_ip = "81.82.50.95"
-
-  k3s_server_groups = {
-    Master = {
-      k3s_server_names        = ["Master1"]
-      k3s_server_vm_size      = "Standard_DS1_v2"
-      k3s_server_admin_user   = "ubuntu"
-      k3s_server_disk_size_gb = 30
-      k3s_server_extra_tags   = { "Role" = "master" }
-      k3s_server_node_label   = "node.kubernetes.io/role=master"
-      k3s_server_node_taint   = "node-role.kubernetes.io/master=:NoSchedule"
+  subnets_extra = {
+    "n2" = {
+      description     = "N2 interface between RAN and AMF"
+      interface_index = 1
+      subnet_cidr     = "10.0.2.0/24"
+    },
+    "n3" = {
+      description     = "N3 interface between RAN and UPF"
+      interface_index = 2
+      subnet_cidr     = "10.0.3.0/24"
+    },
+    "n4" = {
+      description     = "N4 interface between SMF and UPF"
+      interface_index = 3
+      subnet_cidr     = "10.0.4.0/24"
+    },
+    "n6" = {
+      description     = "N6 interface between UPF and DN"
+      interface_index = 4
+      subnet_cidr     = "10.0.6.0/24"
+    },
+    "n9" = {
+      description     = "N9 interface between UPF and UPF"
+      interface_index = 5
+      subnet_cidr     = "10.0.9.0/24"
     }
   }
 
-  k3s_agent_groups = {
-    Worker = {
-      k3s_agent_names        = ["Worker1"]
-      k3s_agent_vm_size      = "Standard_DS1_v2"
-      k3s_agent_admin_user   = "ubuntu"
-      k3s_agent_disk_size_gb = 30
-      k3s_agent_extra_tags   = { "Role" = "worker" }
-      k3s_agent_node_label   = "node.kubernetes.io/role=worker"
-      k3s_agent_node_taint   = ""
-    }
 
-    Infra = {
-      k3s_agent_names        = ["Infra1"]
-      k3s_agent_vm_size      = "Standard_DS1_v2"
-      k3s_agent_admin_user   = "ubuntu"
-      k3s_agent_disk_size_gb = 30
-      k3s_agent_extra_tags   = { "Role" = "infra" }
-      k3s_agent_node_label   = "node.kubernetes.io/role=infra"
-      k3s_agent_node_taint   = "node.kubernetes.io/role=infra:NoSchedule"
-    }
-  }
+  allowed_bastion_ssh_cidr_blocks = ["0.0.0.0/0"]
+  num_workers                     = 3
 
-  k3s_version = "v1.20.8+k3s1"
-  k3s_token   = "230D3530-9E4E-419A-AC37-F62069F00439"
+  subnet_cidr_pod_network = "192.168.0.0/16"
 
-  k3s_disable_component = "traefik"
-  k3s_kubeconfig_output = "./output/server_agent_groups/kubeconfig.yaml"
+  bastion_instance_type = "t2.medium"
+  master_instance_type  = "m5.4xlarge"
+  worker_instance_type  = "m5.4xlarge"
+
+  private_zone = true
+
 }
 ```
 
