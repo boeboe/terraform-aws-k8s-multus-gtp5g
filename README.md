@@ -6,11 +6,15 @@
 [![Open Source Helpers](https://www.codetriage.com/boeboe/terraform-aws-k8s-multus-gtp5g/badges/users.svg)](https://www.codetriage.com/boeboe/terraform-aws-k8s-multus-gtp5g)
 [![MIT Licensed](https://img.shields.io/badge/license-MIT-green.svg)](https://tldrlegal.com/license/mit-license)
 
-Terraform module which creates a [k3s](https://k3s.io/) cluster, with multi-server 
-and labels/taints management features, on azure cloud. 
+Terraform module which creates a [k8s](https://kubernetes.io/) cluster with
+ - [gtp5g](https://github.com/PrinzOwO/gtp5g) kernel module installed on the master 
+and worker nodes
+ - [Calico](https://github.com/projectcalico/cni-plugin) CNI installed for pod networking 
+ - [Multus](https://github.com/k8snetworkplumbingwg/multus-cni) CNI installed for multi nic support
+ - A configurable amount of extra interfaces/subnets to be added to the k8s master and nodes
 
 
-Make sure to check the number of supported interfaces!
+Make sure to check the number of supported interfaces for your EC2 instance types!
  - https://aws.amazon.com/ec2/instance-types/
  - https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-eni.html
 
