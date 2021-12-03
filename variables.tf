@@ -103,8 +103,3 @@ variable "k8s_k9s_version" {
   type        = string
   description = "K9s version."
 }
-
-variable "k8s_istio_version" {
-  type        = string
-  description = "Istio version."
-}

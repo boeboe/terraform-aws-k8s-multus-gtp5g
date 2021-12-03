@@ -43,6 +43,8 @@ data "template_file" "user_data_master" {
   template = file("${path.module}/templates/user_data/master.sh")
 
   vars = {
+    AVAILABILITY_ZONE       = var.aws_availability_zone
+    CLUSTER_NAME            = local.name_prefix
     K8S_TOKEN               = local.token
     K8S_VERSION             = "${var.k8s_version}-00"
     MASTER_PRIVATE_IP       = cidrhost(var.aws_subnet_cidr_private, 10)

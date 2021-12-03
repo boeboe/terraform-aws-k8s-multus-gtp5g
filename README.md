@@ -95,7 +95,6 @@ Check the [examples](examples) for more details.
 | k8s_cluster_name | Name for the Kubernetes cluster. If null, a random name is automatically chosen | map | | true |
 | k8s_version | Kubernetes version | string | | true |
 | k8s_k9s_version | K9s version | string | | true |
-| k8s_istio_version | Istio version | string | | true |
 | k8s_subnet_cidr_pod_network | CIDR block for kubernetes pod network | string | | true |
 | k8s_num_workers | Number of worker nodes | number | | true |
 

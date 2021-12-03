@@ -31,7 +31,6 @@ aws_subnets_extra = {
 k8s_cluster_name  = "k8s-f5gc"
 k8s_version       = "1.21.7"
 k8s_k9s_version   = "0.25.7"
-k8s_istio_version = "1.11.3"
 
 k8s_subnet_cidr_pod_network = "192.168.0.0/16"
 k8s_num_workers             = 2
