@@ -77,6 +77,11 @@ variable "aws_worker_instance_type" {
   description = "EC2 instance type for the worker nodes."
 }
 
+variable "aws_instance_apt_upgrade" {
+  type        = bool
+  description = "Upgrade ubuntu aptitude packages if true."
+}
+
 variable "k8s_num_workers" {
   type        = number
   description = "Number of worker nodes."

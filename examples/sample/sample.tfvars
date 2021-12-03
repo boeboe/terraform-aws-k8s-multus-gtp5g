@@ -13,6 +13,7 @@ aws_allowed_bastion_ssh_cidr_blocks = ["0.0.0.0/0"]
 aws_bastion_instance_type = "t2.medium"
 aws_master_instance_type  = "t2.large"
 aws_worker_instance_type  = "t2.large"
+aws_instance_apt_upgrade  = true
 
 aws_private_zone = true
 

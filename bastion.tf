@@ -2,6 +2,7 @@ data "template_file" "user_data_bastion" {
   template = file("${path.module}/templates/user_data/bastion.sh")
 
   vars = {
+    APT_UPGRADE = "${var.aws_instance_apt_upgrade}"
     K8S_VERSION = "${var.k8s_version}-00"
     K9S_VERSION = "v${var.k8s_k9s_version}"
   }

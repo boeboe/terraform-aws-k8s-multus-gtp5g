@@ -48,6 +48,7 @@ data "template_file" "user_data_workers" {
   template = file("${path.module}/templates/user_data/worker.sh")
 
   vars = {
+    APT_UPGRADE       = "${var.aws_instance_apt_upgrade}"
     AVAILABILITY_ZONE = var.aws_availability_zone
     K8S_TOKEN         = local.token
     K8S_VERSION       = "${var.k8s_version}-00"

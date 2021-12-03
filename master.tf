@@ -43,6 +43,7 @@ data "template_file" "user_data_master" {
   template = file("${path.module}/templates/user_data/master.sh")
 
   vars = {
+    APT_UPGRADE             = "${var.aws_instance_apt_upgrade}"
     AVAILABILITY_ZONE       = var.aws_availability_zone
     CLUSTER_NAME            = local.name_prefix
     K8S_TOKEN               = local.token

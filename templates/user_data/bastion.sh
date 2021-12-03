@@ -22,7 +22,8 @@ add-apt-repository -y "deb [arch=amd64] https://download.docker.com/linux/ubuntu
 add-apt-repository -y "deb [arch=amd64] https://apt.kubernetes.io/ kubernetes-xenial main"
 apt-add-repository -y "deb [arch=amd64] https://apt.releases.hashicorp.com focal main"
 
-apt-get -y update ; apt-get -y upgrade
+apt-get -y update 
+if [ "${APT_UPGRADE}" = true ] ; then apt-get -y upgrade ; fi
 apt-get -y install apt-transport-https ca-certificates software-properties-common \
                    curl net-tools nmap httpie tcpdump wget socat sshpass \
                    build-essential make git tree locate \
