@@ -11,9 +11,9 @@ Terraform module which creates a [k8s](https://kubernetes.io/) cluster with
 and worker nodes
  - [Calico](https://github.com/projectcalico/cni-plugin) CNI installed for pod networking 
  - [Multus](https://github.com/k8snetworkplumbingwg/multus-cni) CNI installed for multi nic support
+ - [AWS load balancer controller](https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.3/) installed for autop creation of LB based on Ingress or Service Type LoadBalancer
+ - [Rancher local path provisioner](https://hub.docker.com/r/rancher/local-path-provisioner) as default storage class for persistent volume creation 
  - A configurable amount of extra interfaces/subnets to be added to the k8s master and workers
- - AWS load balancer controller installed for autop creation of LB based on Ingress or Service Type LoadBalancer
- - Rancher local path provisioner as default storage class for persistent volume creation 
 
 
 Make sure to check the number of supported interfaces for your EC2 instance types!
