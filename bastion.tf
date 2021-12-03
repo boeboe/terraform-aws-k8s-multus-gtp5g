@@ -4,7 +4,6 @@ data "template_file" "user_data_bastion" {
   vars = {
     K8S_VERSION   = "${var.k8s_version}-00"
     K9S_VERSION   = "v${var.k8s_k9s_version}"
-    ISTIO_VERSION = var.k8s_istio_version
   }
 }
 

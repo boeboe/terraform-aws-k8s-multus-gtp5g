@@ -68,14 +68,6 @@ tar xvfz k9s_Linux_x86_64.tar.gz
 mv k9s /usr/local/bin
 chmod +x /usr/local/bin/k9s
 
-# Install Istioctl
-echo "[Terraform Cloud Init] Install istioctl"
-cd /tmp
-curl -LO https://github.com/istio/istio/releases/download/${ISTIO_VERSION}/istioctl-${ISTIO_VERSION}-linux-amd64.tar.gz
-tar xvfz istioctl-${ISTIO_VERSION}-linux-amd64.tar.gz
-mv istioctl /usr/local/bin
-chmod +x /usr/local/bin/istioctl
-
 # Indicate completion of bootstrapping
 echo "[Terraform Cloud Init] Indicate completion of bootstrapping"
 touch /home/ubuntu/done
