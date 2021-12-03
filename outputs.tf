@@ -5,7 +5,7 @@ output "bastion_public_ip" {
 
 output "bastion_ssh_command" {
   description = "Command to access jumphost through SSH."
-  value       = "ssh -i ${var.public_key_file} ubuntu@${aws_instance.bastion.public_ip}"
+  value       = "ssh -i ${var.private_key_file} ubuntu@${aws_instance.bastion.public_ip}"
 }
 
 output "aws_zone_id" {

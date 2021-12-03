@@ -62,8 +62,6 @@ module "k8s-multus-gtp5g" {
 
   k8s_subnet_cidr_pod_network = "192.168.0.0/16"
   k8s_num_workers             = 2
-
-
 }
 ```
 
