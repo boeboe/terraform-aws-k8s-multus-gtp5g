@@ -128,7 +128,7 @@ chown -R ubuntu:ubuntu /home/ubuntu/kubernetes
 # Install aws load balancer controller
 echo "[Terraform Cloud Init] Install aws load balancer controller"
 mkdir -p /home/ubuntu/kubernetes
-curl https://github.com/jetstack/cert-manager/releases/download/v1.5.3/cert-manager.yaml -o /home/ubuntu/kubernetes/cert-manager.yaml
+curl -L https://github.com/jetstack/cert-manager/releases/download/v1.5.3/cert-manager.yaml -o /home/ubuntu/kubernetes/cert-manager.yaml
 curl https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/main/docs/install/v2_2_4_full.yaml -o /home/ubuntu/kubernetes/aws-lb-controller.yaml
 sed -i 's/your-cluster-name/${CLUSTER_NAME}/g' /home/ubuntu/kubernetes/aws-lb-controller.yaml
 kubectl apply --validate=false -f /home/ubuntu/kubernetes/cert-manager.yaml
