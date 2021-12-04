@@ -30,7 +30,7 @@ resource "aws_instance" "bastion" {
   }
 
   vpc_security_group_ids = [
-    aws_security_group.bastion.id,
+    aws_security_group.bastion_sg.id,
   ]
 
   tags = merge(var.aws_extra_tags, {

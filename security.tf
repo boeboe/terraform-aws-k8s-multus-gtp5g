@@ -4,8 +4,10 @@ resource "aws_key_pair" "ssh_key_pair" {
   tags            = var.aws_extra_tags
 }
 
-resource "aws_security_group" "bastion" {
-  vpc_id = aws_vpc.my_vpc.id
+resource "aws_security_group" "bastion_sg" {
+  name        = "${local.name_prefix}-k8s-bastion-sg"
+  vpc_id      = aws_vpc.my_vpc.id
+  description = "Security group for bastion host"
 
   tags = merge(var.aws_extra_tags, {
     "Name" = "${local.name_prefix}-bastion-sg"
@@ -15,7 +17,7 @@ resource "aws_security_group" "bastion" {
 
 resource "aws_security_group_rule" "bastion_egress" {
   type              = "egress"
-  security_group_id = aws_security_group.bastion.id
+  security_group_id = aws_security_group.bastion_sg.id
   description       = "${local.name_prefix}-bastion-egress"
 
   from_port   = 0
@@ -26,7 +28,7 @@ resource "aws_security_group_rule" "bastion_egress" {
 
 resource "aws_security_group_rule" "bastion_ingress_ssh" {
   type              = "ingress"
-  security_group_id = aws_security_group.bastion.id
+  security_group_id = aws_security_group.bastion_sg.id
   description       = "${local.name_prefix}-bastion-ingress-ssh"
 
   protocol    = "tcp"
@@ -35,19 +37,21 @@ resource "aws_security_group_rule" "bastion_ingress_ssh" {
   to_port     = 22
 }
 
-resource "aws_security_group" "k8s" {
-  vpc_id = aws_vpc.my_vpc.id
+resource "aws_security_group" "k8s_master_sg" {
+  name        = "${local.name_prefix}-k8s-master-sg"
+  vpc_id      = aws_vpc.my_vpc.id
+  description = "Security group for kubernetes master nodes"
 
   tags = merge(var.aws_extra_tags, {
-    "Name" = "${local.name_prefix}-k8s-sg"
+    "Name" = "${local.name_prefix}-k8s-master-sg"
     }
   )
 }
 
-resource "aws_security_group_rule" "k8s_egress" {
+resource "aws_security_group_rule" "k8s_master_egress" {
   type              = "egress"
-  security_group_id = aws_security_group.k8s.id
-  description       = "${local.name_prefix}-k8s-egress"
+  security_group_id = aws_security_group.k8s_master_sg.id
+  description       = "${local.name_prefix}-k8s-master-egress"
 
   from_port   = 0
   to_port     = 0
@@ -55,10 +59,10 @@ resource "aws_security_group_rule" "k8s_egress" {
   cidr_blocks = ["0.0.0.0/0"]
 }
 
-resource "aws_security_group_rule" "k8s_ingress_ssh" {
+resource "aws_security_group_rule" "k8s_master_ingress_ssh" {
   type              = "ingress"
-  security_group_id = aws_security_group.k8s.id
-  description       = "${local.name_prefix}-k8s-ingress-ssh"
+  security_group_id = aws_security_group.k8s_master_sg.id
+  description       = "${local.name_prefix}-k8s-master-ingress-ssh"
 
   protocol    = "tcp"
   cidr_blocks = [var.aws_subnet_cidr_public]
@@ -66,10 +70,10 @@ resource "aws_security_group_rule" "k8s_ingress_ssh" {
   to_port     = 22
 }
 
-resource "aws_security_group_rule" "k8s_ingress_api_server" {
+resource "aws_security_group_rule" "k8s_master_ingress_apiserver" {
   type              = "ingress"
-  security_group_id = aws_security_group.k8s.id
-  description       = "${local.name_prefix}-k8s-ingress-api-server"
+  security_group_id = aws_security_group.k8s_master_sg.id
+  description       = "${local.name_prefix}-k8s-master-ingress-apiserver"
 
   protocol    = "tcp"
   cidr_blocks = var.aws_allowed_external_cidr_blocks
@@ -77,10 +81,10 @@ resource "aws_security_group_rule" "k8s_ingress_api_server" {
   to_port     = 6443
 }
 
-resource "aws_security_group_rule" "k8s_ingress_node_internal" {
+resource "aws_security_group_rule" "k8s_master_ingress_node_internal" {
   type              = "ingress"
-  security_group_id = aws_security_group.k8s.id
-  description       = "${local.name_prefix}-k8s-ingress-node-internal"
+  security_group_id = aws_security_group.k8s_master_sg.id
+  description       = "${local.name_prefix}-k8s-master-ingress-node-internal"
 
   protocol  = -1
   self      = true
@@ -88,10 +92,87 @@ resource "aws_security_group_rule" "k8s_ingress_node_internal" {
   to_port   = 0
 }
 
-resource "aws_security_group_rule" "k8s_ingress_pod_internal" {
+resource "aws_security_group_rule" "k8s_master_ingress_pod_internal" {
   type              = "ingress"
-  security_group_id = aws_security_group.k8s.id
-  description       = "${local.name_prefix}-k8s-ingress-pod-internal"
+  security_group_id = aws_security_group.k8s_master_sg.id
+  description       = "${local.name_prefix}-k8s-master-ingress-pod-internal"
+
+  protocol    = -1
+  cidr_blocks = [var.k8s_subnet_cidr_pod_network]
+  from_port   = 0
+  to_port     = 0
+}
+
+resource "aws_security_group" "k8s_worker_sg" {
+  name        = "${local.name_prefix}-k8s-worker-sg"
+  vpc_id      = aws_vpc.my_vpc.id
+  description = "Security group for kubernetes worker nodes"
+
+  tags = merge(var.aws_extra_tags, {
+    "Name" = "${local.name_prefix}-k8s-worker-sg"
+    }
+  )
+}
+
+resource "aws_security_group_rule" "k8s_worker_egress" {
+  type              = "egress"
+  security_group_id = aws_security_group.k8s_worker_sg.id
+  description       = "${local.name_prefix}-k8s-worker-egress"
+
+  from_port   = 0
+  to_port     = 0
+  protocol    = "-1"
+  cidr_blocks = ["0.0.0.0/0"]
+}
+
+resource "aws_security_group_rule" "k8s_worker_ingress_ssh" {
+  type              = "ingress"
+  security_group_id = aws_security_group.k8s_worker_sg.id
+  description       = "${local.name_prefix}-k8s-worker-ingress-ssh"
+
+  protocol    = "tcp"
+  cidr_blocks = [var.aws_subnet_cidr_public]
+  from_port   = 22
+  to_port     = 22
+}
+
+resource "aws_security_group_rule" "k8s_worker_ingress_http" {
+  type              = "ingress"
+  security_group_id = aws_security_group.k8s_worker_sg.id
+  description       = "${local.name_prefix}-k8s-worker-ingress-http"
+
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+  from_port   = 80
+  to_port     = 80
+}
+
+resource "aws_security_group_rule" "k8s_worker_ingress_https" {
+  type              = "ingress"
+  security_group_id = aws_security_group.k8s_worker_sg.id
+  description       = "${local.name_prefix}-k8s-worker-ingress-https"
+
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+  from_port   = 443
+  to_port     = 443
+}
+
+resource "aws_security_group_rule" "k8s_worker_ingress_node_internal" {
+  type              = "ingress"
+  security_group_id = aws_security_group.k8s_worker_sg.id
+  description       = "${local.name_prefix}-k8s-worker-ingress-node-internal"
+
+  protocol  = -1
+  self      = true
+  from_port = 0
+  to_port   = 0
+}
+
+resource "aws_security_group_rule" "k8s_worker_ingress_pod_internal" {
+  type              = "ingress"
+  security_group_id = aws_security_group.k8s_worker_sg.id
+  description       = "${local.name_prefix}-k8s-worker-ingress-pod-internal"
 
   protocol    = -1
   cidr_blocks = [var.k8s_subnet_cidr_pod_network]

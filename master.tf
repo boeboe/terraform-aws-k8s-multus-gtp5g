@@ -15,7 +15,7 @@ resource "aws_network_interface" "master_nic_private_subnet" {
   description = "Primary kubernetes interface in private subnet"
 
   security_groups = [
-    aws_security_group.k8s.id,
+    aws_security_group.k8s_master_sg.id,
   ]
 
   tags = merge(var.aws_extra_tags, {

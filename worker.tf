@@ -19,7 +19,7 @@ resource "aws_network_interface" "workers_nic_private_subnet" {
   description = "Primary kubernetes interface in private subnet"
 
   security_groups = [
-    aws_security_group.k8s.id,
+    aws_security_group.k8s_worker_sg.id,
   ]
 
   tags = merge(var.aws_extra_tags, {
