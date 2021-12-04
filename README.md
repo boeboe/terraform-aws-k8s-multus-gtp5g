@@ -77,7 +77,7 @@ Check the [examples](examples) for more details.
 | aws_region | AWS region | string | | true |
 | aws_availability_zone | AWS availability zone | string | | true |
 | aws_extra_tags | A set of tags to assign to the created resources | string | | true |
-| aws_allowed_bastion_ssh_cidr_blocks | List of CIDR blocks from which it is allowed to make SSH connections to the bastion host | string | | true |
+| aws_allowed_external_cidr_blocks | List of CIDR blocks from which it is allowed to make bastion SSH and kubectl connections | string | | true |
 | aws_bastion_instance_type | EC2 instance type for the bastion host | string | | true |
 | aws_master_instance_type | EC2 instance type for the master node (must have at least 2 CPUs) | string | | true |
 | aws_worker_instance_type | EC2 instance type for the worker nodes | string | | true |
