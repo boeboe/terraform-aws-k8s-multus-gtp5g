@@ -60,6 +60,7 @@ git clone https://github.com/free5gc/gtp5g.git
 cd gtp5g
 sed -i 's/ip_tunnel_get_stats64/dev_get_tstats64/g' gtp5g.c
 make clean && make && make install
+modprobe gtp5g
 
 # Run kubeadm to bootstrap worker
 echo "[Terraform Cloud Init] Run kubeadm to bootstrap worker"

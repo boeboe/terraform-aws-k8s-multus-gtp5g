@@ -8,7 +8,7 @@ aws_extra_tags = {
   "Managed" : "Terraform",
 }
 
-aws_allowed_bastion_ssh_cidr_blocks = ["0.0.0.0/0"]
+aws_allowed_external_cidr_blocks = ["0.0.0.0/0"]
 
 aws_bastion_instance_type = "t2.medium"
 aws_master_instance_type  = "m5.4xlarge"
@@ -56,4 +56,4 @@ k8s_k9s_version   = "0.25.7"
 k8s_subnet_cidr_pod_network = "192.168.0.0/16"
 k8s_num_workers             = 3
 
-
+k8s_local_kubeconfig = "/tmp/kubeconfig.yaml"

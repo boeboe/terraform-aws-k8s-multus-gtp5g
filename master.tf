@@ -44,11 +44,10 @@ data "template_file" "user_data_master" {
 
   vars = {
     APT_UPGRADE             = "${var.aws_instance_apt_upgrade}"
-    AVAILABILITY_ZONE       = var.aws_availability_zone
     CLUSTER_NAME            = local.name_prefix
     K8S_TOKEN               = local.token
     K8S_VERSION             = "${var.k8s_version}-00"
-    MASTER_PRIVATE_IP       = cidrhost(var.aws_subnet_cidr_private, 10)
+    MASTER_PUBLIC_DNS       = aws_lb.nlb_master.dns_name
     SUBNET_CIDR_POD_NETWORK = var.k8s_subnet_cidr_pod_network
   }
 }
@@ -89,4 +88,10 @@ resource "aws_network_interface_attachment" "master_interface_attachment" {
   instance_id          = aws_instance.master.id
   network_interface_id = lookup(aws_network_interface.master_nic_extra_subnets, "${each.value.interface_index}").id
   device_index         = each.value.interface_index
+}
+
+resource "aws_lb_target_group_attachment" "nlb_target_group_attach_master" {
+  target_group_arn = aws_lb_target_group.nlb_target_group_master.arn
+  target_id        = aws_instance.master.id
+  port             = 6443
 }

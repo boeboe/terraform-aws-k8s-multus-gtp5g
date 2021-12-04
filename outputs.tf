@@ -22,3 +22,8 @@ output "k8s_worker_private_ips" {
   description = "Kubernetes worker private ip addresses."
   value       = aws_instance.workers.*.private_ip
 }
+
+output "k8s_node_info" {
+  description = "Kubernetes kubectl get nodes command."
+  value       = "kubectl --kubeconfig=${var.k8s_local_kubeconfig} get nodes -o wide"
+}

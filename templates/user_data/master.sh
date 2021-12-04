@@ -60,11 +60,14 @@ git clone https://github.com/free5gc/gtp5g.git
 cd gtp5g
 sed -i 's/ip_tunnel_get_stats64/dev_get_tstats64/g' gtp5g.c
 make clean && make && make install
+modprobe gtp5g
 
 # Run kubeadm to bootstrap master
 echo "[Terraform Cloud Init] Run kubeadm to bootstrap master"
-mkdir -p /home/ubuntu/kubernetes
 instance_id=$(wget -q -O - http://169.254.169.254/latest/meta-data/instance-id)
+private_ip=$(wget -q -O - http://169.254.169.254/latest/meta-data/local-ipv4)
+availability_zone=$(wget -q -O - http://169.254.169.254/latest/meta-data/placement/availability-zone)
+mkdir -p /home/ubuntu/kubernetes
 cat <<EOF | tee /home/ubuntu/kubernetes/kubeadm-master.yaml
 apiVersion: kubeadm.k8s.io/v1beta2
 kind: InitConfiguration
@@ -81,11 +84,12 @@ networking:
   podSubnet: "${SUBNET_CIDR_POD_NETWORK}"
 apiServer:
   certSANs:
-    - "${MASTER_PRIVATE_IP}"
+    - "$private_ip"
+    - "${MASTER_PUBLIC_DNS}"
 ---
 apiVersion: kubelet.config.k8s.io/v1beta1
 kind: KubeletConfiguration
-providerID: "aws:///${AVAILABILITY_ZONE}/$instance_id"
+providerID: "aws:///$availability_zone/$instance_id"
 EOF
 kubeadm init --config /home/ubuntu/kubernetes/kubeadm-master.yaml
 chown -R ubuntu:ubuntu /home/ubuntu/kubernetes
@@ -124,16 +128,6 @@ mkdir -p /home/ubuntu/kubernetes
 curl https://raw.githubusercontent.com/rancher/local-path-provisioner/master/deploy/local-path-storage.yaml -o /home/ubuntu/kubernetes/rancher-storage.yaml
 kubectl apply -f /home/ubuntu/kubernetes/rancher-storage.yaml
 kubectl patch storageclass local-path -p "{\"metadata\": {\"annotations\":{\"storageclass.kubernetes.io/is-default-class\":\"true\"}}}"
-chown -R ubuntu:ubuntu /home/ubuntu/kubernetes
-
-# Install aws load balancer controller
-echo "[Terraform Cloud Init] Install aws load balancer controller"
-mkdir -p /home/ubuntu/kubernetes
-curl -L https://github.com/jetstack/cert-manager/releases/download/v1.5.3/cert-manager.yaml -o /home/ubuntu/kubernetes/cert-manager.yaml
-curl https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/main/docs/install/v2_2_4_full.yaml -o /home/ubuntu/kubernetes/aws-lb-controller.yaml
-sed -i 's/your-cluster-name/${CLUSTER_NAME}/g' /home/ubuntu/kubernetes/aws-lb-controller.yaml
-kubectl apply --validate=false -f /home/ubuntu/kubernetes/cert-manager.yaml
-kubectl apply -f /home/ubuntu/kubernetes/aws-lb-controller.yaml
 chown -R ubuntu:ubuntu /home/ubuntu/kubernetes
 
 # Indicate completion of bootstrapping

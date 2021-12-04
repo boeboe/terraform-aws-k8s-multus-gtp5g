@@ -30,7 +30,7 @@ resource "aws_security_group_rule" "bastion_ingress_ssh" {
   description       = "${local.name_prefix}-bastion-ingress-ssh"
 
   protocol    = "tcp"
-  cidr_blocks = var.aws_allowed_bastion_ssh_cidr_blocks
+  cidr_blocks = var.aws_allowed_external_cidr_blocks
   from_port   = 22
   to_port     = 22
 }
@@ -72,7 +72,7 @@ resource "aws_security_group_rule" "k8s_ingress_api_server" {
   description       = "${local.name_prefix}-k8s-ingress-api-server"
 
   protocol    = "tcp"
-  cidr_blocks = [var.aws_subnet_cidr_public]
+  cidr_blocks = var.aws_allowed_external_cidr_blocks
   from_port   = 6443
   to_port     = 6443
 }

@@ -57,9 +57,9 @@ variable "k8s_cluster_name" {
   default     = null
 }
 
-variable "aws_allowed_bastion_ssh_cidr_blocks" {
+variable "aws_allowed_external_cidr_blocks" {
   type        = list(string)
-  description = "List of CIDR blocks from which it is allowed to make SSH connections to the bastion host."
+  description = "List of CIDR blocks from which it is allowed to make bastion SSH and kubectl connections."
 }
 
 variable "aws_bastion_instance_type" {
@@ -107,4 +107,9 @@ variable "k8s_version" {
 variable "k8s_k9s_version" {
   type        = string
   description = "K9s version."
+}
+
+variable "k8s_local_kubeconfig" {
+  type        = string
+  description = "Kubernetes kubeconfig local file path."
 }

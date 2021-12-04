@@ -58,6 +58,8 @@ data "template_file" "prepare_kubectl" {
     PRIVATE_KEY_FILE  = var.private_key_file
     BASTION_PUBLIC_IP = aws_instance.bastion.public_ip
     MASTER_PRIVATE_IP = aws_instance.master.private_ip
+    MASTER_PUBLIC_DNS = aws_lb.nlb_master.dns_name
+    KUBECONFIG_LOCAL  = var.k8s_local_kubeconfig
   }
 }
 

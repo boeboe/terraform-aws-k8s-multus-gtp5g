@@ -130,6 +130,55 @@ resource "aws_subnet" "extra_subnets" {
   )
 }
 
+resource "aws_lb" "nlb_master" {
+  name               = "${local.name_prefix}-nlb-master"
+  internal           = false
+  load_balancer_type = "network"
+  subnets            = [aws_subnet.public_subnet.id]
+
+  enable_deletion_protection = false
+
+  tags = merge(var.aws_extra_tags, {
+    "Name" = "${local.name_prefix}-nlb-master"
+    }
+  )
+}
+
+resource "aws_lb_target_group" "nlb_target_group_master" {
+  name        = "${local.name_prefix}-nlb-target-group-master"
+  port        = 6443
+  protocol    = "TCP"
+  target_type = "instance"
+  vpc_id      = aws_vpc.my_vpc.id
+
+  health_check {
+    enabled  = true
+    protocol = "TCP"
+    interval = 10
+  }
+
+  tags = merge(var.aws_extra_tags, {
+    "Name" = "${local.name_prefix}-nlb-target-group-master"
+    }
+  )
+}
+
+resource "aws_lb_listener" "nlb_listener_master" {
+  load_balancer_arn = aws_lb.nlb_master.arn
+  port              = "6443"
+  protocol          = "TCP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.nlb_target_group_master.arn
+  }
+
+  tags = merge(var.aws_extra_tags, {
+    "Name" = "${local.name_prefix}-nlb-listener-master"
+    }
+  )
+}
+
 resource "aws_route53_zone" "zone" {
   count = var.aws_private_zone ? 1 : 0
   name  = "${local.name_prefix}.com"
