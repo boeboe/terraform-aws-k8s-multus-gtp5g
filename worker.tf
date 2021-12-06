@@ -70,6 +70,14 @@ resource "aws_instance" "workers" {
     device_index         = 0
   }
 
+  dynamic "network_interface" {
+    for_each = var.aws_subnets_extra
+    content {
+      network_interface_id = lookup(aws_network_interface.workers_nic_extra_subnets, "${count.index}.${network_interface.value.interface_index}").id
+      device_index         = network_interface.value.interface_index
+    }
+  }  
+
   root_block_device {
     volume_type           = "gp2"
     volume_size           = "50"
@@ -86,14 +94,4 @@ resource "aws_instance" "workers" {
     "kubernetes.io/cluster/${local.name_prefix}" = "shared"
     }
   )
-}
-
-resource "aws_network_interface_attachment" "workers_interface_attachment" {
-  for_each = {
-    for subnets_extra_per_worker in local.subnets_extra_per_worker_flatten : "${subnets_extra_per_worker.worker_index}.${subnets_extra_per_worker.interface_index}" => subnets_extra_per_worker
-  }
-
-  instance_id          = aws_instance.workers[each.value.worker_index].id
-  network_interface_id = lookup(aws_network_interface.workers_nic_extra_subnets, "${each.value.worker_index}.${each.value.interface_index}").id
-  device_index         = each.value.interface_index
 }
