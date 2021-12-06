@@ -63,6 +63,16 @@ resource "aws_instance" "master" {
     device_index         = 0
   }
 
+  dynamic "network_interface" {
+    for_each = {
+      for subnets_extra in local.subnets_extra_master_flatten : "${subnets_extra.interface_index}" => subnets_extra
+    }
+    content {
+      network_interface_id = lookup(aws_network_interface.master_nic_extra_subnets, "${network_interface.value.interface_index}").id
+      device_index         = network_interface.value.interface_index
+    }
+  }
+
   root_block_device {
     volume_type           = "gp2"
     volume_size           = "50"
@@ -78,16 +88,6 @@ resource "aws_instance" "master" {
     "Name" = "${local.name_prefix}-master"
     }
   )
-}
-
-resource "aws_network_interface_attachment" "master_interface_attachment" {
-  for_each = {
-    for subnets_extra in local.subnets_extra_master_flatten : "${subnets_extra.interface_index}" => subnets_extra
-  }
-
-  instance_id          = aws_instance.master.id
-  network_interface_id = lookup(aws_network_interface.master_nic_extra_subnets, "${each.value.interface_index}").id
-  device_index         = each.value.interface_index
 }
 
 resource "aws_lb_target_group_attachment" "nlb_target_group_attach_master" {

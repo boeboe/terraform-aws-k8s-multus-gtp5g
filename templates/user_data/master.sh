@@ -31,7 +31,7 @@ apt-get -y install apt-transport-https ca-certificates software-properties-commo
                    curl net-tools nmap httpie tcpdump wget socat tree locate \
                    build-essential make git \
                    docker-ce docker-ce-cli containerd.io \
-                   kubelet=${K8S_VERSION} kubeadm=${K8S_VERSION} kubectl=${K8S_VERSION}
+                   kubelet=${K8S_VERSION} kubeadm=${K8S_VERSION} kubectl=${K8S_VERSION} kubernetes-cni
 apt-mark -y hold kubelet kubeadm kubectl
 
 # Docker user and permissions
