@@ -26,6 +26,11 @@ aws_subnets_extra = {
     description     = "Extra secundary interface"
     interface_index = 1
     subnet_cidr     = "10.0.2.0/24"
+  },
+  "extra_bis" = {
+    description     = "Extra third interface"
+    interface_index = 2
+    subnet_cidr     = "10.0.3.0/24"
   }
 }
 

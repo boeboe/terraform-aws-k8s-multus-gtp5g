@@ -2,7 +2,7 @@
 # This will output the help for each task
 # thanks to https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 .PHONY: help
-.PHONY: init plan deploy destroy clean reset validate update
+.PHONY: init plan deploy output destroy clean reset validate update
 
 help: ## This help
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z0-9_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
@@ -29,6 +29,9 @@ plan: init ## Plan infrastructure changes using terraform
 
 deploy: plan ## Deploy infrastructure using terraform
 	terraform apply -auto-approve -input=false -state=${TERRAFORM_STATE} ${TERRAFORM_PLAN} ;
+
+output: ## Print output of current terraform deployment
+	terraform output -state=${TERRAFORM_STATE}
 
 destroy: ## Cleanup infrastructure managed by terraform
 	terraform destroy -auto-approve -input=false -var-file=${TERRAFORM_VARS} -state=${TERRAFORM_STATE} ;
