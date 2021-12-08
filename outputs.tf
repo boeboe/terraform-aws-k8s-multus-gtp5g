@@ -25,7 +25,7 @@ output "k8s_worker_primary_private_ips" {
 
 output "k8s_worker_extra_subnet_ips" {
   description = "Kubernetes worker extra subnet ip addresses."
-  value = [ for v in aws_network_interface.workers_nic_extra_subnets : v.private_ip ]
+  value       = [for v in aws_network_interface.workers_nic_extra_subnets : v.private_ip]
 }
 
 output "k8s_node_info" {

@@ -22,12 +22,12 @@ aws_subnet_cidr_public  = "10.0.0.0/24"
 aws_subnet_cidr_private = "10.0.1.0/24"
 
 aws_subnets_extra = {
-  "extra" = {
+  "extra_second" = {
     description     = "Extra secundary interface"
     interface_index = 1
     subnet_cidr     = "10.0.2.0/24"
   },
-  "extra_bis" = {
+  "extra_third" = {
     description     = "Extra third interface"
     interface_index = 2
     subnet_cidr     = "10.0.3.0/24"

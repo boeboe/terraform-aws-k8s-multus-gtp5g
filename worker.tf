@@ -76,7 +76,7 @@ resource "aws_instance" "workers" {
       network_interface_id = lookup(aws_network_interface.workers_nic_extra_subnets, "${count.index}.${network_interface.value.interface_index}").id
       device_index         = network_interface.value.interface_index
     }
-  }  
+  }
 
   root_block_device {
     volume_type           = "gp2"

@@ -89,9 +89,3 @@ resource "aws_instance" "master" {
     }
   )
 }
-
-resource "aws_lb_target_group_attachment" "nlb_target_group_attach_master" {
-  target_group_arn = aws_lb_target_group.nlb_target_group_master.arn
-  target_id        = aws_instance.master.id
-  port             = 6443
-}

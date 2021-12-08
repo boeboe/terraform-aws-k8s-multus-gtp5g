@@ -216,7 +216,6 @@ resource "aws_iam_instance_profile" "bastion_instance_profile" {
   )
 }
 
-
 resource "aws_iam_policy" "bastion_policy" {
   name        = "${local.name_prefix}-bastion-policy"
   path        = "/"
