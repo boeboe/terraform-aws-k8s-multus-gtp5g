@@ -3,7 +3,7 @@ aws_availability_zone = "eu-west-1a"
 
 aws_extra_tags = {
   "Email" : "b.vanbos@gmail.com",
-  "Environment" : "k8s-f5gc",
+  "Environment" : "multus-demo",
   "Owner" : "Bart Van Bos",
   "Managed" : "Terraform",
 }
@@ -15,7 +15,8 @@ aws_master_instance_type  = "t2.large"
 aws_worker_instance_type  = "t2.large"
 aws_instance_apt_upgrade  = true
 
-aws_private_zone = true
+aws_route53_isprivate = false
+aws_route53_zone      = "multus-demo.twistio.io"
 
 aws_vpc_cidr            = "10.0.0.0/16"
 aws_subnet_cidr_public  = "10.0.0.0/24"
@@ -34,7 +35,7 @@ aws_subnets_extra = {
   }
 }
 
-k8s_cluster_name  = "k8s-f5gc"
+k8s_cluster_name  = "multus-demo"
 k8s_version       = "1.21.7"
 k8s_k9s_version   = "0.25.7"
 

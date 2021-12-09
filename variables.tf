@@ -93,10 +93,14 @@ variable "aws_extra_tags" {
   default     = {}
 }
 
-variable "aws_private_zone" {
+variable "aws_route53_isprivate" {
   type        = bool
-  description = "Create a private Route53 host zone."
-  default     = false
+  description = "Boolean indicating if the route53 zone is private."
+}
+
+variable "aws_route53_zone" {
+  type        = string
+  description = "Route53 hosted zone."
 }
 
 variable "k8s_version" {

@@ -8,9 +8,29 @@ output "bastion_ssh_command" {
   value       = "ssh -i ${var.private_key_file} ubuntu@${aws_instance.bastion.public_ip}"
 }
 
-output "aws_zone_id" {
-  description = "Private zone id for Kubernetes."
-  value       = var.aws_private_zone ? join("", aws_route53_zone.zone.*.zone_id) : ""
+output "aws_lb_dns_k8s_apiserver" {
+  description = "Public LB DNS of Kubernetes apiserver."
+  value       = aws_lb.nlb_master.dns_name
+}
+
+output "aws_lb_dns_k8s_ingress" {
+  description = "Public LB DNS of Kubernetes ingress."
+  value       = aws_lb.nlb_worker_ingress.dns_name
+}
+
+output "aws_route53_zone_id" {
+  description = "Route53 zone id for Kubernetes."
+  value       = aws_route53_zone.my_zone.zone_id
+}
+
+output "aws_route53_k8s_apiserver" {
+  description = "Route53 DNS for Kubernetes apiserver."
+  value       = aws_route53_record.nlb_master_k8s_api_record.fqdn
+}
+
+output "aws_route53_k8s_ingress" {
+  description = "Route53 DNS for Kubernetes ingress."
+  value       = aws_route53_record.nlb_worker_www_record.fqdn
 }
 
 output "k8s_master_private_ip" {

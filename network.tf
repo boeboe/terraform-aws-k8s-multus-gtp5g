@@ -130,16 +130,35 @@ resource "aws_subnet" "extra_subnets" {
   )
 }
 
-resource "aws_route53_zone" "zone" {
-  count = var.aws_private_zone ? 1 : 0
-  name  = "${local.name_prefix}.com"
+resource "aws_route53_zone" "my_zone" {
+  name    = "${var.aws_route53_zone}."
+  comment = "Hosted zone for ${local.name_prefix}"
 
-  vpc {
-    vpc_id = aws_vpc.my_vpc.id
+  dynamic "vpc" {
+    for_each = var.aws_route53_isprivate ? [1] : []
+    content {
+      vpc_id = aws_vpc.my_vpc.id
+    }
   }
 
   tags = merge(var.aws_extra_tags, {
-    "Name" = "${local.name_prefix}.com"
+    "Name" = "${local.name_prefix}-route53-zone"
     }
   )
+}
+
+resource "aws_route53_record" "nlb_master_k8s_api_record" {
+  zone_id = aws_route53_zone.my_zone.zone_id
+  name    = "k8s-api"
+  type    = "CNAME"
+  ttl     = "5"
+  records = ["${aws_lb.nlb_master.dns_name}"]
+}
+
+resource "aws_route53_record" "nlb_worker_www_record" {
+  zone_id = aws_route53_zone.my_zone.zone_id
+  name    = "www"
+  type    = "CNAME"
+  ttl     = "5"
+  records = ["${aws_lb.nlb_worker_ingress.dns_name}"]
 }

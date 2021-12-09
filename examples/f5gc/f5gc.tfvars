@@ -15,7 +15,8 @@ aws_master_instance_type  = "m5.4xlarge"
 aws_worker_instance_type  = "m5.4xlarge"
 aws_instance_apt_upgrade  = false
 
-aws_private_zone = true
+aws_route53_isprivate = false
+aws_route53_zone      = "k8s-f5gc.twistio.io"
 
 aws_vpc_cidr            = "10.0.0.0/16"
 aws_subnet_cidr_public  = "10.0.0.0/24"

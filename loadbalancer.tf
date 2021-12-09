@@ -47,8 +47,8 @@ resource "aws_lb_listener" "nlb_listener_master" {
   )
 }
 
-resource "aws_lb" "nlb_worker_http" {
-  name               = "${local.name_prefix}-nlb-worker-http"
+resource "aws_lb" "nlb_worker_ingress" {
+  name               = "${local.name_prefix}-nlb-worker-ingress"
   internal           = false
   load_balancer_type = "network"
   subnets            = [aws_subnet.public_subnet.id]
@@ -56,7 +56,7 @@ resource "aws_lb" "nlb_worker_http" {
   enable_deletion_protection = false
 
   tags = merge(var.aws_extra_tags, {
-    "Name" = "${local.name_prefix}-nlb-worker-http"
+    "Name" = "${local.name_prefix}-nlb-worker-ingress"
     }
   )
 }
@@ -81,7 +81,7 @@ resource "aws_lb_target_group" "nlb_target_group_worker_http" {
 }
 
 resource "aws_lb_listener" "nlb_listener_worker_http" {
-  load_balancer_arn = aws_lb.nlb_worker_http.arn
+  load_balancer_arn = aws_lb.nlb_worker_ingress.arn
   port              = "80"
   protocol          = "TCP"
 
@@ -92,20 +92,6 @@ resource "aws_lb_listener" "nlb_listener_worker_http" {
 
   tags = merge(var.aws_extra_tags, {
     "Name" = "${local.name_prefix}-nlb-listener-worker-http"
-    }
-  )
-}
-
-resource "aws_lb" "nlb_worker_https" {
-  name               = "${local.name_prefix}-nlb-worker-https"
-  internal           = false
-  load_balancer_type = "network"
-  subnets            = [aws_subnet.public_subnet.id]
-
-  enable_deletion_protection = false
-
-  tags = merge(var.aws_extra_tags, {
-    "Name" = "${local.name_prefix}-nlb-worker-https"
     }
   )
 }
@@ -130,7 +116,7 @@ resource "aws_lb_target_group" "nlb_target_group_worker_https" {
 }
 
 resource "aws_lb_listener" "nlb_listener_worker_https" {
-  load_balancer_arn = aws_lb.nlb_worker_https.arn
+  load_balancer_arn = aws_lb.nlb_worker_ingress.arn
   port              = "443"
   protocol          = "TCP"
 
