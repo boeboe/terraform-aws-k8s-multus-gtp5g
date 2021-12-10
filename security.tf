@@ -98,7 +98,7 @@ resource "aws_security_group_rule" "k8s_master_ingress_pod_internal" {
   description       = "${local.name_prefix}-k8s-master-ingress-pod-internal"
 
   protocol    = -1
-  cidr_blocks = [var.k8s_subnet_cidr_pod_network]
+  cidr_blocks = [var.k8s_subnet_cidr_pod_network, var.aws_subnet_cidr_private]
   from_port   = 0
   to_port     = 0
 }
@@ -175,7 +175,7 @@ resource "aws_security_group_rule" "k8s_worker_ingress_pod_internal" {
   description       = "${local.name_prefix}-k8s-worker-ingress-pod-internal"
 
   protocol    = -1
-  cidr_blocks = [var.k8s_subnet_cidr_pod_network]
+  cidr_blocks = [var.k8s_subnet_cidr_pod_network, var.aws_subnet_cidr_private]
   from_port   = 0
   to_port     = 0
 }
