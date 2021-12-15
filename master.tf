@@ -38,7 +38,7 @@ resource "aws_network_interface" "master_nic_extra_subnets" {
   ]
 
   tags = merge(var.aws_extra_tags, {
-    "Name" = "${local.name_prefix}-nic-${each.value.name}-subnet-master"
+    "Name"                             = "${local.name_prefix}-nic-${each.value.name}-subnet-master"
     "node.k8s.amazonaws.com/no_manage" = "true"
     }
   )
@@ -54,6 +54,18 @@ data "template_file" "user_data_master" {
     K8S_VERSION             = "${var.k8s_version}-00"
     MASTER_PUBLIC_DNS       = aws_lb.nlb_master.dns_name
     SUBNET_CIDR_POD_NETWORK = var.k8s_subnet_cidr_pod_network
+
+    INSTALL_CALICO_CNI            = "${var.k8s_install_calico_cni}"
+    INSTALL_AWS_VPC_CNI           = "${var.k8s_install_aws_vpc_cni}"
+    INSTALL_MULTUS_CNI            = "${var.k8s_install_multus_cni}"
+    INSTALL_WHEREABOUTS_PLUGIN    = "${var.k8s_install_whereabouts_plugin}"
+    INSTALL_RANCHER_LOCAL_STORAGE = "${var.k8s_install_rancher_local_storage}"
+
+    CALICO_CNI_URL            = var.k8s_install_calico_cni_url
+    AWS_VPC_CNI_URL           = var.k8s_install_aws_vpc_cni_url
+    MULTUS_CNI_URL            = var.k8s_install_multus_cni_url
+    WHEREABOUTS_PLUGIN_URL    = var.k8s_install_whereabouts_plugin_url
+    RANCHER_LOCAL_STORAGE_URL = var.k8s_install_rancher_local_storage_url
   }
 }
 

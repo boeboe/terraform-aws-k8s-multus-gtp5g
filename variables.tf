@@ -113,6 +113,67 @@ variable "k8s_k9s_version" {
   description = "K9s version."
 }
 
+variable "k8s_install_calico_cni" {
+  type        = bool
+  description = "Install Calico CNI."
+}
+
+# https://docs.projectcalico.org/manifests/calico.yaml
+variable "k8s_install_calico_cni_url" {
+  type        = string
+  description = "URL from which to install Calico CNI."
+  default     = "https://raw.githubusercontent.com/boeboe/terraform-aws-k8s-multus-gtp5g/master/templates/kubernetes/calico-cni/calico-3.21.2.yaml"
+}
+
+variable "k8s_install_aws_vpc_cni" {
+  type        = bool
+  description = "Install AWS VPC CNI."
+}
+
+# https://raw.githubusercontent.com/aws/amazon-vpc-cni-k8s/release-1.10/config/master/aws-k8s-cni.yaml
+variable "k8s_install_aws_vpc_cni_url" {
+  type        = string
+  description = "URL from which to install AWS VPC CNI."
+  default     = "https://raw.githubusercontent.com/boeboe/terraform-aws-k8s-multus-gtp5g/master/templates/kubernetes/aws-vpc-cni/aws-vpc-1.10.yaml"
+}
+
+variable "k8s_install_multus_cni" {
+  type        = bool
+  description = "Install Multus CNI."
+}
+
+# https://raw.githubusercontent.com/k8snetworkplumbingwg/multus-cni/master/deployments/multus-daemonset-thick-plugin.yml
+# https://raw.githubusercontent.com/aws/amazon-vpc-cni-k8s/master/config/multus/v3.7.2-eksbuild.2/aws-k8s-multus.yaml
+variable "k8s_install_multus_cni_url" {
+  type        = string
+  description = "URL from which to install Multus CNI."
+  default     = "https://raw.githubusercontent.com/boeboe/terraform-aws-k8s-multus-gtp5g/master/templates/kubernetes/multus-cni/multus-3.7.2.yaml"
+}
+
+variable "k8s_install_whereabouts_plugin" {
+  type        = bool
+  description = "Install Whereabouts Network Plugin."
+}
+
+# https://github.com/k8snetworkplumbingwg/whereabouts/blob/v0.5.1/doc/crds
+variable "k8s_install_whereabouts_plugin_url" {
+  type        = string
+  description = "URL from which to install Whereabouts Network Plugin."
+  default     = "https://raw.githubusercontent.com/boeboe/terraform-aws-k8s-multus-gtp5g/master/templates/kubernetes/whereabouts-plugin/whereabouts-0.5.1.yaml"
+}
+
+variable "k8s_install_rancher_local_storage" {
+  type        = bool
+  description = "Install Rancher Local StorageClass."
+}
+
+# https://raw.githubusercontent.com/rancher/local-path-provisioner/master/deploy/local-path-storage.yaml
+variable "k8s_install_rancher_local_storage_url" {
+  type        = string
+  description = "URL from which to install Whereabouts Network Plugin."
+  default     = "https://raw.githubusercontent.com/boeboe/terraform-aws-k8s-multus-gtp5g/master/templates/kubernetes/rancher-storage/local-path-0.0.20.yaml"
+}
+
 variable "k8s_local_kubeconfig" {
   type        = string
   description = "Kubernetes kubeconfig local file path."

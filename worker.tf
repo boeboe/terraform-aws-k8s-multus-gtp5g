@@ -42,7 +42,7 @@ resource "aws_network_interface" "workers_nic_extra_subnets" {
   ]
 
   tags = merge(var.aws_extra_tags, {
-    "Name" = "${local.name_prefix}-nic-${each.value.name}-subnet-worker${each.value.worker_index}"
+    "Name"                             = "${local.name_prefix}-nic-${each.value.name}-subnet-worker${each.value.worker_index}"
     "node.k8s.amazonaws.com/no_manage" = "true"
     }
   )

@@ -1,4 +1,4 @@
-aws_region            = "eu-west-1"
+  aws_region            = "eu-west-1"
 aws_availability_zone = "eu-west-1a"
 
 aws_extra_tags = {
@@ -52,9 +52,15 @@ aws_subnets_extra = {
 
 k8s_cluster_name  = "k8s-f5gc"
 k8s_version       = "1.21.7"
-k8s_k9s_version   = "0.25.7"
+k8s_k9s_version   = "0.25.12"
 
 k8s_subnet_cidr_pod_network = "192.168.0.0/16"
 k8s_num_workers             = 3
+
+k8s_install_calico_cni            = false
+k8s_install_aws_vpc_cni           = true
+k8s_install_multus_cni            = true
+k8s_install_whereabouts_plugin    = true
+k8s_install_rancher_local_storage = true
 
 k8s_local_kubeconfig = "/tmp/kubeconfig.yaml"
