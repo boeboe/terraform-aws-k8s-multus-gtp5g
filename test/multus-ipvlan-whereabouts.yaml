@@ -1,7 +1,7 @@
 apiVersion: "k8s.cni.cncf.io/v1"
 kind: NetworkAttachmentDefinition
 metadata:
-  name: ipvlan-conf1
+  name: ipvlan-whereabouts-conf1
 spec:
   config: '{
       "cniVersion": "0.3.0",
@@ -9,20 +9,15 @@ spec:
       "mode": "l2",
       "master": "eth1",
       "ipam": {
-        "type": "static",
-        "addresses": [
-          {
-            "address": "10.0.2.22/24",
-            "gateway": "10.0.2.1"
-          }
-        ]
+        "type": "whereabouts",
+        "range": "10.0.2.21-10.0.2.40/24",
       }
     }'
 ---
 apiVersion: "k8s.cni.cncf.io/v1"
 kind: NetworkAttachmentDefinition
 metadata:
-  name: ipvlan-conf2
+  name: ipvlan-whereabouts-conf2
 spec:
   config: '{
       "cniVersion": "0.3.0",
@@ -30,13 +25,8 @@ spec:
       "mode": "l2",
       "master": "eth1",
       "ipam": {
-        "type": "static",
-        "addresses": [
-          {
-            "address": "10.0.2.21/24",
-            "gateway": "10.0.2.1"
-          }
-        ]
+        "type": "whereabouts",
+        "range": "10.0.2.21-10.0.2.40/24",
       }
     }'
 ---
@@ -45,10 +35,15 @@ kind: Pod
 metadata:
   name: samplepod1
   annotations:
-    k8s.v1.cni.cncf.io/networks: ipvlan-conf1
+    k8s.v1.cni.cncf.io/networks: ipvlan-whereabouts-conf1
   labels:
     app: samplepod1
 spec:
+  initContainers:
+  - name: aws-ip-mgmt
+    image: boeboe/aws-multus-ip-manager:alpine-0.1
+    imagePullPolicy: IfNotPresent
+    args: [/bin/sh, -c, '/app/script.sh initContainers']
   containers:
   - name: samplepod
     command: ["/bin/ash", "-c", "trap : TERM INT; sleep infinity & wait"]
@@ -69,10 +64,15 @@ kind: Pod
 metadata:
   name: samplepod2
   annotations:
-    k8s.v1.cni.cncf.io/networks: ipvlan-conf2
+    k8s.v1.cni.cncf.io/networks: ipvlan-whereabouts-conf2
   labels:
     app: samplepod2
 spec:
+  initContainers:
+  - name: aws-ip-mgmt
+    image: boeboe/aws-multus-ip-manager:alpine-0.1
+    imagePullPolicy: IfNotPresent
+    args: [/bin/sh, -c, '/app/script.sh initContainers']
   containers:
   - name: samplepod
     command: ["/bin/ash", "-c", "trap : TERM INT; sleep infinity & wait"]
