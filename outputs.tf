@@ -52,3 +52,8 @@ output "k8s_node_info" {
   description = "Kubernetes kubectl get nodes command."
   value       = "kubectl --kubeconfig=${var.k8s_local_kubeconfig} get nodes -o wide"
 }
+
+output "k8s_kubeconfig_export" {
+  description = "Kubernetes kubeconfig export for kubectl."
+  value       = "export KUBECONFIG=${var.k8s_local_kubeconfig}"
+}
