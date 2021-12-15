@@ -111,14 +111,18 @@ echo "[Terraform Cloud Init] UP"
 # Install calico cni
 # echo "[Terraform Cloud Init] Install calico cni"
 # mkdir -p /home/ubuntu/kubernetes
-# curl https://docs.projectcalico.org/manifests/calico.yaml -o /home/ubuntu/kubernetes/calico.yaml
+# CALICO_CNI_URL=https://docs.projectcalico.org/manifests/calico.yaml
+# CALICO_CNI_URL=https://raw.githubusercontent.com/boeboe/terraform-aws-k8s-multus-gtp5g/master/templates/kubernetes/calico-cni/calico-3.21.2.yaml
+# curl $CALICO_CNI_URL -o /home/ubuntu/kubernetes/calico.yaml
 # kubectl apply -f /home/ubuntu/kubernetes/calico.yaml
 # chown -R ubuntu:ubuntu /home/ubuntu/kubernetes
 
 # Install aws-vpc cni
 echo "[Terraform Cloud Init] Install aws-vpc cni"
 mkdir -p /home/ubuntu/kubernetes
-curl https://raw.githubusercontent.com/aws/amazon-vpc-cni-k8s/release-1.10/config/master/aws-k8s-cni.yaml -o /home/ubuntu/kubernetes/aws-cni.yaml
+# AWS_VPC_CNI_URL=https://raw.githubusercontent.com/aws/amazon-vpc-cni-k8s/release-1.10/config/master/aws-k8s-cni.yaml
+AWS_VPC_CNI_URL=https://raw.githubusercontent.com/boeboe/terraform-aws-k8s-multus-gtp5g/master/templates/kubernetes/aws-vpc-cni/aws-vpc-1.10.yaml
+curl $AWS_VPC_CNI_URL -o /home/ubuntu/kubernetes/aws-cni.yaml
 sed -i 's/us-west-2/eu-west-1/g' /home/ubuntu/kubernetes/aws-cni.yaml
 kubectl apply -f /home/ubuntu/kubernetes/aws-cni.yaml
 chown -R ubuntu:ubuntu /home/ubuntu/kubernetes
@@ -126,15 +130,27 @@ chown -R ubuntu:ubuntu /home/ubuntu/kubernetes
 # Install multus cni
 echo "[Terraform Cloud Init] Install multus cni"
 mkdir -p /home/ubuntu/kubernetes
-# curl https://raw.githubusercontent.com/k8snetworkplumbingwg/multus-cni/master/deployments/multus-daemonset-thick-plugin.yml -o /home/ubuntu/kubernetes/multus.yaml
-curl https://raw.githubusercontent.com/aws/amazon-vpc-cni-k8s/master/config/multus/v3.7.2-eksbuild.2/aws-k8s-multus.yaml -o /home/ubuntu/kubernetes/multus.yaml
+# MULTUS_CNI_URL=https://raw.githubusercontent.com/k8snetworkplumbingwg/multus-cni/master/deployments/multus-daemonset-thick-plugin.yml
+# MULTUS_CNI_URL=https://raw.githubusercontent.com/aws/amazon-vpc-cni-k8s/master/config/multus/v3.7.2-eksbuild.2/aws-k8s-multus.yaml
+MULTUS_CNI_URL=https://raw.githubusercontent.com/boeboe/terraform-aws-k8s-multus-gtp5g/master/templates/kubernetes/multus-cni/multus-3.7.2.yaml
+curl $MULTUS_CNI_URL -o /home/ubuntu/kubernetes/multus.yaml
 kubectl apply -f /home/ubuntu/kubernetes/multus.yaml
+chown -R ubuntu:ubuntu /home/ubuntu/kubernetes
+
+# Install whereabouts network plugin
+echo "[Terraform Cloud Init] Install whereabouts network plugin"
+mkdir -p /home/ubuntu/kubernetes
+WHEREABOUTS_PLUGIN_URL=https://raw.githubusercontent.com/boeboe/terraform-aws-k8s-multus-gtp5g/master/templates/kubernetes/whereabouts-plugin/whereabouts-0.5.1.yaml
+curl $WHEREABOUTS_PLUGIN_URL -o /home/ubuntu/kubernetes/whereabouts.yaml
+kubectl apply -f /home/ubuntu/kubernetes/whereabouts.yaml
 chown -R ubuntu:ubuntu /home/ubuntu/kubernetes
 
 # Install rancher local path storage class
 echo "[Terraform Cloud Init] Install rancher local path storage class"
 mkdir -p /home/ubuntu/kubernetes
-curl https://raw.githubusercontent.com/rancher/local-path-provisioner/master/deploy/local-path-storage.yaml -o /home/ubuntu/kubernetes/rancher-storage.yaml
+# RANCHER_STORAGE_URL=https://raw.githubusercontent.com/rancher/local-path-provisioner/master/deploy/local-path-storage.yaml
+RANCHER_STORAGE_URL=https://raw.githubusercontent.com/boeboe/terraform-aws-k8s-multus-gtp5g/master/templates/kubernetes/rancher-storage/local-path-0.0.20.yaml
+curl $RANCHER_STORAGE_URL -o /home/ubuntu/kubernetes/rancher-storage.yaml
 kubectl apply -f /home/ubuntu/kubernetes/rancher-storage.yaml
 kubectl patch storageclass local-path -p "{\"metadata\": {\"annotations\":{\"storageclass.kubernetes.io/is-default-class\":\"true\"}}}"
 chown -R ubuntu:ubuntu /home/ubuntu/kubernetes
