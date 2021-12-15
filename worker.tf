@@ -37,8 +37,13 @@ resource "aws_network_interface" "workers_nic_extra_subnets" {
   private_ips = [cidrhost(each.value.subnet_cidr, 11 + each.value.worker_index)]
   description = each.value.description
 
+  security_groups = [
+    aws_security_group.extra_subnet_sg.id,
+  ]
+
   tags = merge(var.aws_extra_tags, {
     "Name" = "${local.name_prefix}-nic-${each.value.name}-subnet-worker${each.value.worker_index}"
+    "node.k8s.amazonaws.com/no_manage" = "true"
     }
   )
 }

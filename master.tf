@@ -33,8 +33,13 @@ resource "aws_network_interface" "master_nic_extra_subnets" {
   private_ips = [cidrhost(each.value.subnet_cidr, 10)]
   description = each.value.description
 
+  security_groups = [
+    aws_security_group.extra_subnet_sg.id,
+  ]
+
   tags = merge(var.aws_extra_tags, {
     "Name" = "${local.name_prefix}-nic-${each.value.name}-subnet-master"
+    "node.k8s.amazonaws.com/no_manage" = "true"
     }
   )
 }
@@ -53,10 +58,11 @@ data "template_file" "user_data_master" {
 }
 
 resource "aws_instance" "master" {
-  ami           = data.aws_ami.ubuntu.image_id
-  instance_type = var.aws_master_instance_type
-  key_name      = aws_key_pair.ssh_key_pair.key_name
-  user_data     = data.template_file.user_data_master.rendered
+  ami                  = data.aws_ami.ubuntu.image_id
+  instance_type        = var.aws_master_instance_type
+  iam_instance_profile = aws_iam_instance_profile.worker_instance_profile.name
+  key_name             = aws_key_pair.ssh_key_pair.key_name
+  user_data            = data.template_file.user_data_master.rendered
 
   network_interface {
     network_interface_id = aws_network_interface.master_nic_private_subnet.id

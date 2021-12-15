@@ -180,6 +180,39 @@ resource "aws_security_group_rule" "k8s_worker_ingress_pod_internal" {
   to_port     = 0
 }
 
+resource "aws_security_group" "extra_subnet_sg" {
+  name        = "${local.name_prefix}-k8s-extra-subnet-sg"
+  vpc_id      = aws_vpc.my_vpc.id
+  description = "Security group for extra subnets"
+
+  tags = merge(var.aws_extra_tags, {
+    "Name" = "${local.name_prefix}-k8s-extra-subnet-sg"
+    }
+  )
+}
+
+resource "aws_security_group_rule" "extra_subnet_egress" {
+  type              = "egress"
+  security_group_id = aws_security_group.extra_subnet_sg.id
+  description       = "${local.name_prefix}-extra-subnet-egress"
+
+  from_port   = 0
+  to_port     = 0
+  protocol    = "-1"
+  cidr_blocks = ["0.0.0.0/0"]
+}
+
+resource "aws_security_group_rule" "extra_subnet_ingress" {
+  type              = "ingress"
+  security_group_id = aws_security_group.extra_subnet_sg.id
+  description       = "${local.name_prefix}-extra-subnet-ingress"
+
+  from_port   = 0
+  to_port     = 0
+  protocol    = "-1"
+  cidr_blocks = ["0.0.0.0/0"]
+}
+
 data "aws_iam_policy_document" "policy_doc_for_bastion_role" {
   statement {
     sid = "BastionAssumeRole"

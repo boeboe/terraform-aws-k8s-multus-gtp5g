@@ -28,7 +28,7 @@ add-apt-repository -y "deb [arch=amd64] https://apt.kubernetes.io/ kubernetes-xe
 apt-get -y update
 if [ "${APT_UPGRADE}" = true ] ; then apt-get -y upgrade ; fi
 apt-get -y install apt-transport-https ca-certificates software-properties-common \
-                   curl net-tools nmap httpie tcpdump wget socat tree locate \
+                   curl net-tools nmap httpie tcpdump wget socat tree locate jq \
                    build-essential make git \
                    docker-ce docker-ce-cli containerd.io \
                    kubelet=${K8S_VERSION} kubeadm=${K8S_VERSION} kubectl=${K8S_VERSION} kubernetes-cni
@@ -109,16 +109,25 @@ while ! kubectl get nodes > /dev/null 2>&1 ; do sleep 1 ; echo -n "." ; done
 echo "[Terraform Cloud Init] UP"
 
 # Install calico cni
-echo "[Terraform Cloud Init] Install calico cni"
+# echo "[Terraform Cloud Init] Install calico cni"
+# mkdir -p /home/ubuntu/kubernetes
+# curl https://docs.projectcalico.org/manifests/calico.yaml -o /home/ubuntu/kubernetes/calico.yaml
+# kubectl apply -f /home/ubuntu/kubernetes/calico.yaml
+# chown -R ubuntu:ubuntu /home/ubuntu/kubernetes
+
+# Install aws-vpc cni
+echo "[Terraform Cloud Init] Install aws-vpc cni"
 mkdir -p /home/ubuntu/kubernetes
-curl https://docs.projectcalico.org/manifests/calico.yaml -o /home/ubuntu/kubernetes/calico.yaml
-kubectl apply -f /home/ubuntu/kubernetes/calico.yaml
+curl https://raw.githubusercontent.com/aws/amazon-vpc-cni-k8s/release-1.10/config/master/aws-k8s-cni.yaml -o /home/ubuntu/kubernetes/aws-cni.yaml
+sed -i 's/us-west-2/eu-west-1/g' /home/ubuntu/kubernetes/aws-cni.yaml
+kubectl apply -f /home/ubuntu/kubernetes/aws-cni.yaml
 chown -R ubuntu:ubuntu /home/ubuntu/kubernetes
 
 # Install multus cni
 echo "[Terraform Cloud Init] Install multus cni"
 mkdir -p /home/ubuntu/kubernetes
-curl https://raw.githubusercontent.com/k8snetworkplumbingwg/multus-cni/master/deployments/multus-daemonset-thick-plugin.yml -o /home/ubuntu/kubernetes/multus.yaml
+# curl https://raw.githubusercontent.com/k8snetworkplumbingwg/multus-cni/master/deployments/multus-daemonset-thick-plugin.yml -o /home/ubuntu/kubernetes/multus.yaml
+curl https://raw.githubusercontent.com/aws/amazon-vpc-cni-k8s/master/config/multus/v3.7.2-eksbuild.2/aws-k8s-multus.yaml -o /home/ubuntu/kubernetes/multus.yaml
 kubectl apply -f /home/ubuntu/kubernetes/multus.yaml
 chown -R ubuntu:ubuntu /home/ubuntu/kubernetes
 
