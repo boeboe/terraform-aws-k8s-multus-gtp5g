@@ -1,53 +1,53 @@
 apiVersion: "k8s.cni.cncf.io/v1"
 kind: NetworkAttachmentDefinition
 metadata:
-  name: macvlan-conf1
+  name: ipvlan-static-conf1
 spec:
   config: '{
-    "cniVersion": "0.3.0",
-    "type": "macvlan",
-    "master": "eth1",
-    "mode": "bridge",
-    "ipam": {
-      "type": "static",
-      "addresses": [
-        {
-          "address": "10.0.2.22/24",
-          "gateway": "10.0.2.1"
-        }
-      ]
-    }
-  }'
+      "cniVersion": "0.3.0",
+      "type": "ipvlan",
+      "mode": "l2",
+      "master": "eth1",
+      "ipam": {
+        "type": "static",
+        "addresses": [
+          {
+            "address": "10.0.2.101/24",
+            "gateway": "10.0.2.1"
+          }
+        ]
+      }
+    }'
 ---
 apiVersion: "k8s.cni.cncf.io/v1"
 kind: NetworkAttachmentDefinition
 metadata:
-  name: macvlan-conf2
+  name: ipvlan-static-conf2
 spec:
   config: '{
-    "cniVersion": "0.3.0",
-    "type": "macvlan",
-    "master": "eth1",
-    "mode": "bridge",
-    "ipam": {
-      "type": "static",
-      "addresses": [
-        {
-          "address": "10.0.2.21/24",
-          "gateway": "10.0.2.1"
-        }
-      ]
-    }
-  }'
+      "cniVersion": "0.3.0",
+      "type": "ipvlan",
+      "mode": "l2",
+      "master": "eth1",
+      "ipam": {
+        "type": "static",
+        "addresses": [
+          {
+            "address": "10.0.2.102/24",
+            "gateway": "10.0.2.1"
+          }
+        ]
+      }
+    }'
 ---
 apiVersion: v1
 kind: Pod
 metadata:
-  name: samplepod1
+  name: static-samplepod1
   annotations:
-    k8s.v1.cni.cncf.io/networks: macvlan-conf1
+    k8s.v1.cni.cncf.io/networks: ipvlan-static-conf1
   labels:
-    app: samplepod1
+    app: static-samplepod1
 spec:
   initContainers:
   - name: aws-ip-mgmt
@@ -66,17 +66,17 @@ spec:
           - key: app
             operator: In
             values:
-            - samplepod2
+            - static-samplepod2
         topologyKey: "kubernetes.io/hostname"
 ---
 apiVersion: v1
 kind: Pod
 metadata:
-  name: samplepod2
+  name: static-samplepod2
   annotations:
-    k8s.v1.cni.cncf.io/networks: macvlan-conf2
+    k8s.v1.cni.cncf.io/networks: ipvlan-static-conf2
   labels:
-    app: samplepod2
+    app: static-samplepod2
 spec:
   initContainers:
   - name: aws-ip-mgmt
@@ -95,5 +95,5 @@ spec:
           - key: app
             operator: In
             values:
-            - samplepod1
+            - static-samplepod1
         topologyKey: "kubernetes.io/hostname"

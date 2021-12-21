@@ -33,11 +33,11 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: samplepod1
+  name: whereabout-samplepod1
   annotations:
     k8s.v1.cni.cncf.io/networks: ipvlan-whereabouts-conf1
   labels:
-    app: samplepod1
+    app: whereabout-samplepod1
 spec:
   initContainers:
   - name: aws-ip-mgmt
@@ -56,17 +56,17 @@ spec:
           - key: app
             operator: In
             values:
-            - samplepod2
+            - whereabout-samplepod2
         topologyKey: "kubernetes.io/hostname"
 ---
 apiVersion: v1
 kind: Pod
 metadata:
-  name: samplepod2
+  name: whereabout-samplepod2
   annotations:
     k8s.v1.cni.cncf.io/networks: ipvlan-whereabouts-conf2
   labels:
-    app: samplepod2
+    app: whereabout-samplepod2
 spec:
   initContainers:
   - name: aws-ip-mgmt
@@ -85,5 +85,5 @@ spec:
           - key: app
             operator: In
             values:
-            - samplepod1
+            - whereabout-samplepod1
         topologyKey: "kubernetes.io/hostname"

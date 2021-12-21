@@ -1,7 +1,7 @@
 apiVersion: "k8s.cni.cncf.io/v1"
 kind: NetworkAttachmentDefinition
 metadata:
-  name: ipvlan-conf1
+  name: ipvlan-static-conf3
 spec:
   config: '{
       "cniVersion": "0.3.0",
@@ -12,7 +12,7 @@ spec:
         "type": "static",
         "addresses": [
           {
-            "address": "10.0.2.22/24",
+            "address": "10.0.2.103/24",
             "gateway": "10.0.2.1"
           }
         ]
@@ -22,7 +22,7 @@ spec:
 apiVersion: "k8s.cni.cncf.io/v1"
 kind: NetworkAttachmentDefinition
 metadata:
-  name: ipvlan-conf2
+  name: ipvlan-static-conf4
 spec:
   config: '{
       "cniVersion": "0.3.0",
@@ -33,7 +33,7 @@ spec:
         "type": "static",
         "addresses": [
           {
-            "address": "10.0.2.21/24",
+            "address": "10.0.2.104/24",
             "gateway": "10.0.2.1"
           }
         ]
@@ -43,21 +43,20 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: samplepod1
+  name: static-samplepod3
   annotations:
-    k8s.v1.cni.cncf.io/networks: ipvlan-conf1
+    k8s.v1.cni.cncf.io/networks: ipvlan-static-conf3
   labels:
-    app: samplepod1
+    app: static-samplepod3
 spec:
-  initContainers:
-  - name: aws-ip-mgmt
-    image: boeboe/aws-multus-ip-manager:alpine-0.1
-    imagePullPolicy: IfNotPresent
-    args: [/bin/sh, -c, '/app/script.sh initContainers']
   containers:
   - name: samplepod
     command: ["/bin/ash", "-c", "trap : TERM INT; sleep infinity & wait"]
     image: alpine
+  - name: aws-ip-mgmt
+    image: boeboe/aws-multus-ip-manager:alpine-0.1
+    imagePullPolicy: IfNotPresent
+    args: [/bin/sh, -c, '/app/script.sh initContainers']
   affinity:
     podAntiAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -66,27 +65,26 @@ spec:
           - key: app
             operator: In
             values:
-            - samplepod2
+            - static-samplepod4
         topologyKey: "kubernetes.io/hostname"
 ---
 apiVersion: v1
 kind: Pod
 metadata:
-  name: samplepod2
+  name: static-samplepod4
   annotations:
-    k8s.v1.cni.cncf.io/networks: ipvlan-conf2
+    k8s.v1.cni.cncf.io/networks: ipvlan-static-conf4
   labels:
-    app: samplepod2
+    app: static-samplepod4
 spec:
-  initContainers:
+  containers:
+  - name: samplepod
+    command: ["/bin/ash", "-c", "trap : TERM INT; sleep infinity & wait"]
+    image: alpine
   - name: aws-ip-mgmt
     image: boeboe/aws-multus-ip-manager:alpine-0.1
     imagePullPolicy: IfNotPresent
     args: [/bin/sh, -c, '/app/script.sh initContainers']
-  containers:
-  - name: samplepod
-    command: ["/bin/ash", "-c", "trap : TERM INT; sleep infinity & wait"]
-    image: alpine 
   affinity:
     podAntiAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -95,5 +93,5 @@ spec:
           - key: app
             operator: In
             values:
-            - samplepod1
+            - static-samplepod3
         topologyKey: "kubernetes.io/hostname"

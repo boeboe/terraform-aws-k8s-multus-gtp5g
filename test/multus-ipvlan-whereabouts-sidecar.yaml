@@ -1,7 +1,7 @@
 apiVersion: "k8s.cni.cncf.io/v1"
 kind: NetworkAttachmentDefinition
 metadata:
-  name: ipvlan-whereabouts-conf1
+  name: ipvlan-whereabouts-conf3
 spec:
   config: '{
       "cniVersion": "0.3.0",
@@ -17,7 +17,7 @@ spec:
 apiVersion: "k8s.cni.cncf.io/v1"
 kind: NetworkAttachmentDefinition
 metadata:
-  name: ipvlan-whereabouts-conf2
+  name: ipvlan-whereabouts-conf4
 spec:
   config: '{
       "cniVersion": "0.3.0",
@@ -33,11 +33,11 @@ spec:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: samplepod1
+  name: whereabout-samplepod3
   annotations:
-    k8s.v1.cni.cncf.io/networks: ipvlan-whereabouts-conf1
+    k8s.v1.cni.cncf.io/networks: ipvlan-whereabouts-conf3
   labels:
-    app: samplepod1
+    app: whereabout-samplepod3
 spec:
   containers:
   - name: samplepod
@@ -55,17 +55,17 @@ spec:
           - key: app
             operator: In
             values:
-            - samplepod2
+            - whereabout-samplepod4
         topologyKey: "kubernetes.io/hostname"
 ---
 apiVersion: v1
 kind: Pod
 metadata:
-  name: samplepod2
+  name: whereabout-samplepod4
   annotations:
-    k8s.v1.cni.cncf.io/networks: ipvlan-whereabouts-conf2
+    k8s.v1.cni.cncf.io/networks: ipvlan-whereabouts-conf4
   labels:
-    app: samplepod2
+    app: whereabout-samplepod4
 spec:
   containers:
   - name: samplepod
@@ -83,5 +83,5 @@ spec:
           - key: app
             operator: In
             values:
-            - samplepod1
+            - whereabout-samplepod3
         topologyKey: "kubernetes.io/hostname"
