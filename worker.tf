@@ -70,6 +70,12 @@ resource "aws_instance" "workers" {
   key_name             = aws_key_pair.ssh_key_pair.key_name
   user_data            = data.template_file.user_data_workers[count.index].rendered
 
+  metadata_options {
+    http_endpoint               = "enabled"
+    http_put_response_hop_limit = 3
+    http_tokens                 = "optional"
+  }
+
   network_interface {
     network_interface_id = aws_network_interface.workers_nic_private_subnet[count.index].id
     device_index         = 0

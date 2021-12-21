@@ -41,7 +41,7 @@ metadata:
 spec:
   initContainers:
   - name: aws-ip-mgmt
-    image: boeboe/aws-multus-ip-manager:alpine-0.1
+    image: boeboe/aws-multus-ip-manager:amazonlinux-0.1
     imagePullPolicy: IfNotPresent
     args: [/bin/sh, -c, '/app/script.sh initContainers']
   containers:
@@ -70,7 +70,7 @@ metadata:
 spec:
   initContainers:
   - name: aws-ip-mgmt
-    image: boeboe/aws-multus-ip-manager:alpine-0.1
+    image: boeboe/aws-multus-ip-manager:amazonlinux-0.1
     imagePullPolicy: IfNotPresent
     args: [/bin/sh, -c, '/app/script.sh initContainers']
   containers:

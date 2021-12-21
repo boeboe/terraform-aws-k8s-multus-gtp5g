@@ -17,6 +17,11 @@ echo "[Terraform Cloud Init] Allow SSH access with user/pass"
 sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
 sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/g' /etc/ssh/sshd_config
 
+# Allow IP Forwarding
+echo "[Terraform Cloud Init] Allow IP Forwarding"
+sed -i 's/#net.ipv4.ip_forward=1/net.ipv4.ip_forward=1/g' /etc/sysctl.conf
+sed -i 's/#net.ipv4.conf.all.rp_filter=1/net.ipv4.conf.all.rp_filter=2/g' /etc/sysctl.conf
+
 # Update and install aptitude packages
 echo "[Terraform Cloud Init] Update and install aptitude packages"
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
